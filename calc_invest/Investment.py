@@ -18,7 +18,7 @@ class Investment_Snapshot:
             current_investments (float) total of current investments
             expected_pct_dividends (float) average expected pct yield from present and future investments
             filing_status (str) tax filing status (default 'single')
-                - ['single', 'married, filing jointly', 'married, filing separately', 'head of household']
+                - ['single', 'mfj', 'mfs', 'hoh'] - mfj = married, filing jointly, mfs = married, filing separately, hoh = head of household
             tax (float) tax percentage withheld from income (default 0.12)
         """
         self.income = annual_taxable_income
@@ -29,15 +29,15 @@ class Investment_Snapshot:
         
         
         
-    def calc_mthly_takehome(self, brackets = [0.1, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37], \
+    def calc_takehome(self, brackets = [0.1, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37], \
                             single = [9875, 40125, 85525, 163300, 207350, 518400], \
-                            mar_joint = [19750, 80250, 171050, 326600, 414700, 622050] \
-                            mar_sep = [9875, 40125, 85525, 163300, 207350, 311026] \
+                            mar_joint = [19750, 80250, 171050, 326600, 414700, 622050], \
+                            mar_sep = [9875, 40125, 85525, 163300, 207350, 311026], \
                             headoh = [14100, 53700, 85500, 163300, 207350, 518400]
-                           ):
+                            ):
         
         """
-        Constructs tax bracket table, sorts person into correct tax bracket, and calculates monthly takehome after tax
+        Constructs tax bracket table, sorts person into correct tax bracket, and takehome after tax
         
         Args:
             brackets (list of floats) current tax bracket percentages
@@ -48,20 +48,22 @@ class Investment_Snapshot:
         """
         ### updated with tax withholdings for 2021
         
-        filing_dict = {'single':single, 'married, filing jointly':mar_joint, 'married, filing separately':mar_sep, 'head of household':headoh}
+        filing_dict = {'single':single, 'mfj':mar_joint, 'mfs':mar_sep, 'hoh':headoh}
         filing = filing_dict[self.filing_status]
         
         # return properly taxed income
         for i in range(1, len(filing)):
             if self.income <= filing[i - 1]:
-                return np.divide(self.income * (1.0 - brackets[i - 1]), 12)
+                return self.income * (1.0 - brackets[i - 1])
             elif self.income <= filing[i] and self.income > filing[i - 1]:
-                return np.divide(self.income * (1.0 - brackets[i]), 12)
+                return self.income * (1.0 - brackets[i])
             else:
-                return np.divide(self.income * (1.0 - brackets[i + 1]), 12)
+                return self.income * (1.0 - brackets[i + 1])
         
     def calc_discretionary_income(self, cont=True, expense):
         
         """
         Takes into account expenses and income after tax to calculate discretionary income
         """
+
+        
