@@ -2,13 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from .FixedExpense import FixedExpense
-from .InterestExpense import InterestExpense
+#from .Expense import Expense
 
 
 class Investment_Snapshot:
     
-    def __init__(self, annual_taxable_income, current_investments, expected_pct_dividends, filing_status='single', tax=0.12):
+    def __init__(self, annual_taxable_income, current_investments, expected_pct_dividends, filing_status='single'):
         
         """
         Overview of current investment/income situation for calculated projections of income and investment
@@ -16,16 +15,14 @@ class Investment_Snapshot:
         Args:
             annual_taxable_income (float) Income of all contributing individuals before tax
             current_investments (float) total of current investments
-            expected_pct_dividends (float) average expected pct yield from present and future investments
+            expected_pct_dividends (float) average expected pct yield from present and future investments (decimal)
             filing_status (str) tax filing status (default 'single')
                 - ['single', 'mfj', 'mfs', 'hoh'] - mfj = married, filing jointly, mfs = married, filing separately, hoh = head of household
-            tax (float) tax percentage withheld from income (default 0.12)
         """
         self.income = annual_taxable_income
         self.investments = current_investments
         self.dividends = expected_pct_dividends
         self.filing_status = filing_status
-        self.tax = tax
         
         
         
@@ -60,10 +57,23 @@ class Investment_Snapshot:
             else:
                 return self.income * (1.0 - brackets[i + 1])
         
-    def calc_discretionary_income(self, cont=True, expense):
+    def calc_discretionary_income(self, expense_table, takehome, period="monthly"):
         
         """
         Takes into account expenses and income after tax to calculate discretionary income
-        """
+            - to be used for further calculation of spending/investment
 
-        
+        Args:
+            expense_table (pandas df) expense names and monthly spending totals
+            takehome (float) net income after tax
+            period (str) "monthly" or "annual" 
+        """
+        if period == "monthly":
+            monthly_di = takehome - np.sum(expense_table[expense_table.columns[1]])
+            return monthly_di
+
+        # elif period == "annual":
+        #     annual_di = takehome - np.sum
+
+    if __name__ == '__main__':
+        main()
