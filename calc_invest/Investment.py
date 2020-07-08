@@ -61,7 +61,7 @@ class Investment_Snapshot:
             else:
                 return self.income * (1.0 - brackets[i + 1]) / 12
         
-    def calc_discretionary_income(self, expense_table, takehome, pct_reinvest, invest_div):
+    def calc_discretionary_income(self, expense_table, takehome, invest_dividends, pct_reinvest=0.7):
         
         """
         Takes into account expenses and income after tax to calculate discretionary income
@@ -71,15 +71,23 @@ class Investment_Snapshot:
             expense_table (pandas df) expense names and monthly spending totals
             takehome (float) net income after tax
             pct_reinvest (float) decimal percent of monthly takehome to reinvest each month
+            invest_dividents (float) expected dividend yield from current investments
         Returns:
-            tbd
+            for_user_money (float): user spendable monthly income
+            to_invest (float): amount of takehome to be invested
         """
-        total_expenses = np.sum(expense_table[expense_table.columns[1]])
-        monthly_di = takehome - total_expenses
-        return monthly_di
 
-        # elif period == "annual":
-        #     annual_di = takehome - np.sum
+        total_expenses = np.sum(expense_table[expense_table.columns[1]])
+        if total_expenses >= self.min_living_cost:
+            print("Your expenses outstrip your desired living income. Consider reevaluating your priorities and your plan for places to cut down to make room for investment.")
+        else:
+            for_user_money = self.min_living_cost - total_expenses
+            for_user_money += invest_dividends * (1.0 - pct_reinvest) # add diff of pct divident funds chosen by user to discretionary spending
+            to_invest = takehome - min_living_cost
+            to_invest += invest_dividends * pct_reinvest # add pct of dividend funds chosen by user to reinvestment
+
+        return for_user_money, to_invest
+
 
     if __name__ == '__main__':
         main()
