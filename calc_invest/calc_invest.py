@@ -27,10 +27,26 @@ annual_taxable_income, current_investments, expected_pct_dividends, min_living_c
 
 finances = Investment_Snapshot(annual_taxable_income, current_investments, expected_pct_dividends, min_living_cost, filing_status)
 
-# net_takehome = finances.calc_takehome()
+
 expense_table = build_expense_table()
 dividends = finances.current_investments * finances.expected_pct_dividends
-finances.calc_discretionary_income(expense_table, finances.calc_takehome()/12, 0.7, dividends)
+net_takehome = finances.calc_takehome()/12
+
+# create list to store investment portfolio totals every month
+investment_totals = []
+discretionary_spending = []
+for _ in months_remaining:
+    for_user_money, to_invest = finances.calc_discretionary_income(expense_table, net_takehome, dividends, pct_invest=0.7)
+
+    investment_totals.append(finances.current_investments)
+    discretionary_spending.append(for_user_money)
+
+    finances.current_investments += to_invest
+    dividends = finances.current_investments * finances.expected_pct_dividends
+
+
+
+# ADD AGGREGATION OF YEARLY PERSONAL INCOME 
 
 
 print("\nExpected monthly takehome: {}\n".format(finances.calc_takehome()/12))
