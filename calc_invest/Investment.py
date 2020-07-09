@@ -21,8 +21,8 @@ class Investment_Snapshot:
                 - ['single', 'mfj', 'mfs', 'hoh'] - mfj = married, filing jointly, mfs = married, filing separately, hoh = head of household
         """
         self.income = annual_taxable_income
-        self.investments = current_investments
-        self.dividends = expected_pct_dividends
+        self.current_investments = current_investments
+        self.expected_pct_dividends = expected_pct_dividends
         self.min_living_cost = min_living_cost / 12 # monthly
         self.filing_status = filing_status
         
@@ -34,7 +34,6 @@ class Investment_Snapshot:
                             mar_sep = [9875, 40125, 85525, 163300, 207350, 311026], \
                             headoh = [14100, 53700, 85500, 163300, 207350, 518400]
                             ):
-        
         """
         Constructs tax bracket table, sorts person into correct tax bracket, and monthly takehome after tax
         
@@ -61,14 +60,14 @@ class Investment_Snapshot:
             else:
                 return self.income * (1.0 - brackets[i + 1]) / 12
         
-    def calc_discretionary_income(self, expense_table, takehome, invest_dividends, pct_reinvest=0.7):
+    def calc_discretionary_income(self, total_expenses, takehome, invest_dividends, pct_reinvest=0.7):
         
         """
         Takes into account expenses and income after tax to calculate discretionary income
             - to be used for further calculation of spending/investment
 
         Args:
-            expense_table (pandas df) expense names and monthly spending totals
+            total_expenses (float) value sum of all expenses of user
             takehome (float) net income after tax
             pct_reinvest (float) decimal percent of monthly takehome to reinvest each month
             invest_dividents (float) expected dividend yield from current investments
@@ -77,13 +76,14 @@ class Investment_Snapshot:
             to_invest (float): amount of takehome to be invested
         """
 
-        total_expenses = np.sum(expense_table[expense_table.columns[1]])
         if total_expenses >= self.min_living_cost:
             print("Your expenses outstrip your desired living income. Consider reevaluating your priorities and your plan for places to cut down to make room for investment.")
+            exit()
+        
         else:
             for_user_money = self.min_living_cost - total_expenses
             for_user_money += invest_dividends * (1.0 - pct_reinvest) # add diff of pct divident funds chosen by user to discretionary spending
-            to_invest = takehome - min_living_cost
+            to_invest = takehome - self.min_living_cost
             to_invest += invest_dividends * pct_reinvest # add pct of dividend funds chosen by user to reinvestment
 
         return for_user_money, to_invest
