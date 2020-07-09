@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="calc-invest-DaringDane", # Replace with your own username
+    name="calc-invest-DaringDane",
     version="0.0.1",
     author="Dane Gunther",
     author_email="danecgunther@gmail.com",
