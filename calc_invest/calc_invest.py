@@ -36,7 +36,10 @@ def calc_invest():
     investment_totals = []
     discretionary_spending = []
     for _ in range(months_remaining):
-        for_user_money, to_invest = finances.calc_discretionary_income(total_expenses, net_takehome, dividends, pct_reinvest=0.8)
+        for_user_money, to_invest = finances.calc_discretionary_income(total_expenses, 
+                                                                       net_takehome, 
+                                                                       dividends, 
+                                                                       pct_reinvest=0.8)
 
         investment_totals.append(finances.current_investments)
         discretionary_spending.append(for_user_money)
