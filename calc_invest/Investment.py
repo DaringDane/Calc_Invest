@@ -95,6 +95,5 @@ class Investment_Snapshot:
 
         return for_user_money, to_invest
 
-
-    if __name__ == '__main__':
-        main()
+if __name__ == '__main__':
+    main()

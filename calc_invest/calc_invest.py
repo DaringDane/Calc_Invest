@@ -79,31 +79,14 @@ def calc_invest(
         finances.current_investments += to_invest
         dividends = finances.current_investments * (finances.expected_pct_dividends / 12) # assumes monthly dividends
 
-    print("All done! Run the following command in a jupyter notebook to see the effects on total income every year: \n data.groupby('year')[['total_for_you_income', 'discretionary_income']].sum()")
-    print("You may need to increase max viewable rows. While n = your desired number of rows, use this command: \n pd.set_option('display.max_rows', n)")
+    print("All done! Run the following command in a jupyter notebook to see the effects on total income every year: \n data.groupby('year')[['total_for_you_income', 'discretionary_income']].sum()\n")
+    print("You may need to increase max viewable rows. While n = your desired number of rows, use this command: \n pd.set_option('display.max_rows', n)\n")
     data = pd.DataFrame({'investment':investment_totals, 'discretionary_income':discretionary_spending, 'expenses':[int(total_expenses) for _ in range(len(investment_totals))]})
     data['investment'], data['discretionary_income'] = round(data['investment']).astype('int64'), round(data['discretionary_income']).astype('int64')
     data['total_for_you_income'] = data.discretionary_income + data.expenses
     data['year'] = [1 + (x // 12) for x in range(len(data))]
     return data, args_dict, expense_table
 
-
-    # Test input in terminal:
-"""
-100000, 40000, 0.05, mfj
-02/08/1992
-70
-car, 310
-y
-rent, 1200
-y
-food, 350
-y
-gas, 150
-y
-pets, 80
-n
-"""
 
 # takes to dt objects and returns the months between the dates
 def month_difference(a, b):
@@ -119,3 +102,38 @@ def time_till_retirement():
 
     months_remaining = month_difference(retire_date, today)
     return months_remaining
+
+def update(Args, new_values, args_dict):
+    """
+    Input list of arguments to modify and list of new values to replace old parameters
+    NOTE: length of [Args] and [new_values] MUST be equal
+
+    Args:
+        Args (list of strings): list of names of arguments to modify
+        new_values (list): list of values to modify strings
+        args_dict (dict): hash table with parameters and values used for calculation
+
+    Returns:
+        updated dictionary of parameters for new investment calculation
+    """
+    for i in range(len(Args)):
+        args_dict[Args[i]] = new_values[i]
+
+    return args_dict
+
+
+    # Test input in terminal:
+"""
+02/08/1992
+70
+car, 310
+y
+rent, 1200
+y
+food, 350
+y
+gas, 150
+y
+pets, 80
+n
+"""
