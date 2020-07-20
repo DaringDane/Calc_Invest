@@ -18,18 +18,18 @@ def calc_invest(
     Takes basic income and tax filing information from user to generate a financial portfolio with modifiable variables and projections until retirement
 
     Args:
-        annual_taxable_income (float): total pre-tax income as entered in tax filing
-        current_investments (float): total current investments
-        expected_pct_dividends (float): average annual return on investments as a float (i.e. - 0.05 = 5%)
-        min_living_cost (float): minimum acceptable living cost user is willing to accept - used for calculations of reinvestment income distribution
-            ['single', 'mfj', 'mfs', 'hoh'] - mfj = married, filing jointly, mfs = married, filing separately, hoh = head of household
-        filing_status (string): tax filing status - used to calculate after-tax income
-        pct_reinvest (float): float percentage of dividend payments to automatically reinvest
-        months_remaining (int): months until retirement. If empty, user is prompted to input data to generate retirement data
-        expense_table (pandas DF): table with 2 attributes - expense name and monthly cost. Can pass in df from external .csv or other file
+    annual_taxable_income (float): total pre-tax income as entered in tax filing
+    current_investments (float): total current investments
+    expected_pct_dividends (float): average annual return on investments as a float (i.e. - 0.05 = 5%)
+    min_living_cost (float): minimum acceptable living cost user is willing to accept - used for calculations of reinvestment income distribution
+        ['single', 'mfj', 'mfs', 'hoh'] - mfj = married, filing jointly, mfs = married, filing separately, hoh = head of household
+    filing_status (string): tax filing status - used to calculate after-tax income
+    pct_reinvest (float): float percentage of dividend payments to automatically reinvest
+    months_remaining (int): months until retirement. If empty, user is prompted to input data to generate retirement data
+    expense_table (pandas DF): table with 2 attributes - expense name and monthly cost. Can pass in df from external .csv or other file
 
     Returns:
-        Dataframe with monthly investment totals and personal spending totals from present until desired retirement age
+    Dataframe with monthly investment totals and personal spending totals from present until desired retirement age
     """
 
     print("This is intended to maximize your investment portfolio along with quality of life, and focuses more on your future than your present. Sacrifice in the short term will yield comfort in the long term. \n")
@@ -90,6 +90,16 @@ def calc_invest(
 
 # takes to dt objects and returns the months between the dates
 def month_difference(a, b):
+    """
+    Calculates difference in months between two datetime objects
+
+    Args:
+    a (pandas datetime object) latest datetime object
+    b (pandas datetime object) earliest datetime object
+    
+    Returns:
+    integer value of months between two dates
+    """
     return 12 * (a.year - b.year) + (a.month - b.month)
 
 def time_till_retirement():
@@ -109,12 +119,12 @@ def update(Args, new_values, args_dict):
     NOTE: length of [Args] and [new_values] MUST be equal
 
     Args:
-        Args (list of strings): list of names of arguments to modify
-        new_values (list): list of values to modify strings
-        args_dict (dict): hash table with parameters and values used for calculation
+    Args (list of strings): list of names of arguments to modify
+    new_values (list): list of values to modify strings
+    args_dict (dict): hash table with parameters and values used for calculation
 
     Returns:
-        updated dictionary of parameters for new investment calculation
+    updated dictionary of parameters for new investment calculation
     """
     for i in range(len(Args)):
         args_dict[Args[i]] = new_values[i]

@@ -67,7 +67,7 @@ class Investment_Snapshot:
             else:
                 return self.income * (1.0 - brackets[i + 1]) / 12
         
-    def calc_discretionary_income(self, total_expenses, takehome, invest_dividends, pct_reinvest=0.7):
+    def calc_discretionary_income(self, total_expenses, takehome, invest_dividends, pct_reinvest):
         
         """
         Takes into account expenses and income after tax to calculate discretionary income
