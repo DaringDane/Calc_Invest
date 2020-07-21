@@ -38,5 +38,4 @@ def build_expense_table():
 
     return pd.DataFrame(expenses)
 
-    if __name__ == '__main__':
-        main()
+    

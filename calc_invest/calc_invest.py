@@ -136,19 +136,5 @@ def update(Args, new_values, args_dict):
 
     return args_dict
 
-
-    # Test input in terminal:
-"""
-02/08/1992
-70
-car, 310
-y
-rent, 1200
-y
-food, 350
-y
-gas, 150
-y
-pets, 80
-n
-"""
+if __name__ == '__main__':
+    main()

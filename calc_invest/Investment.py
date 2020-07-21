@@ -54,6 +54,7 @@ class Investment_Snapshot:
             monthly net income after tax is withdrawn
         """
         ### updated with tax withholdings for 2021
+        ### TODO: UPDATE AFTER TAX CALCULATIONS WITH MARGINAL TAX RATES************************
         
         filing_dict = {'single':single, 'mfj':mar_joint, 'mfs':mar_sep, 'hoh':headoh}
         filing = filing_dict[self.filing_status]
@@ -94,6 +95,3 @@ class Investment_Snapshot:
             to_invest += invest_dividends * pct_reinvest # add pct of dividend funds chosen by user to reinvestment
 
         return for_user_money, to_invest
-
-if __name__ == '__main__':
-    main()
