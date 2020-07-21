@@ -58,6 +58,8 @@ def calc_invest(
     # create a table of expenses from user input
     if expense_table is None:
         expense_table = build_expense_table()
+    elif type(expense_table) is dict:
+        expense_table = pd.DataFrame(expense_table)
     # calc total expenses per month
     total_expenses = np.sum(expense_table[expense_table.columns[1]])
     dividends = finances.current_investments * (finances.expected_pct_dividends / 12) # assumes monthly dividends
@@ -79,13 +81,16 @@ def calc_invest(
         finances.current_investments += to_invest
         dividends = finances.current_investments * (finances.expected_pct_dividends / 12) # assumes monthly dividends
 
-    print("All done! Run the following command in a jupyter notebook to see the effects on total income every year: \n data.groupby('year')[['total_for_you_income', 'discretionary_income']].sum()\n")
-    print("You may need to increase max viewable rows. While n = your desired number of rows, use this command: \n pd.set_option('display.max_rows', n)\n")
     data = pd.DataFrame({'investment':investment_totals, 'discretionary_income':discretionary_spending, 'expenses':[int(total_expenses) for _ in range(len(investment_totals))]})
     data['investment'], data['discretionary_income'] = round(data['investment']).astype('int64'), round(data['discretionary_income']).astype('int64')
-    data['total_for_you_income'] = data.discretionary_income + data.expenses
+    data['total_income'] = data.discretionary_income + data.expenses
     data['year'] = [1 + (x // 12) for x in range(len(data))]
-    return data, args_dict, expense_table
+
+    by_year_calc = data.groupby('year')[['total_income', 'discretionary_income']].sum
+    plot_yearly = by_year_calc()
+    plot_yearly['total_invested'] = data.groupby('year')['investment'].last()
+
+    return data, plot_yearly, args_dict, expense_table
 
 
 # takes to dt objects and returns the months between the dates
@@ -108,7 +113,7 @@ def time_till_retirement():
     age = today.year - bday.year if bday.month < today.month else today.year - bday.year - 1
 
     retirement = int(input("How old would you like to be when you retire: "))
-    retire_date = pd.to_datetime(f"{bday.month}, {bday.day}, {(retirement - age) + today.year}").date()
+    retire_date = pd.to_datetime(f"{today.month}, {today.day}, {(retirement - age) + today.year}").date()
 
     months_remaining = month_difference(retire_date, today)
     return months_remaining
