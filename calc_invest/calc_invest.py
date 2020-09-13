@@ -137,4 +137,4 @@ def update(Args, new_values, args_dict):
     return args_dict
 
 if __name__ == '__main__':
-    main()
+    calc_invest(300000.0, 0, 0.05, 30000, 'mfj', 0.8, 576)

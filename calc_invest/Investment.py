@@ -58,15 +58,25 @@ class Investment_Snapshot:
         
         filing_dict = {'single':single, 'mfj':mar_joint, 'mfs':mar_sep, 'hoh':headoh}
         filing = filing_dict[self.filing_status]
-        
-        # return properly taxed income
-        for i in range(1, len(filing)):
-            if self.income <= filing[i - 1]:
-                return self.income * (1.0 - brackets[i - 1]) / 12
-            elif self.income <= filing[i] and self.income > filing[i - 1]:
-                return self.income * (1.0 - brackets[i]) / 12
+
+        tax_running_sum = 0
+        last_bracket = 0
+        for i in range(len(filing)):
+            if self.income <= filing[0]:
+                return self.income (1.0 - brackets[0]) / 12
+            elif self.income > filing[i]:
+                if i < len(filing)-1:
+                    tax_running_sum += (filing[i] - last_bracket) * brackets[i]
+                    last_bracket = filing[i]
+                else:
+                    tax_running_sum += (filing[i] - last_bracket) * brackets[i]
+                    total_taxed = (self.income - filing[i]) * brackets[i + 1] + tax_running_sum
+                    income_total = self.income - total_taxed
+                    return income_total / 12
             else:
-                return self.income * (1.0 - brackets[i + 1]) / 12
+                total_taxed = (self.income - filing[i - 1]) * brackets[i] + tax_running_sum
+                income_total = self.income - total_taxed
+                return income_total / 12
         
     def calc_discretionary_income(self, total_expenses, takehome, invest_dividends, pct_reinvest):
         
@@ -95,3 +105,4 @@ class Investment_Snapshot:
             to_invest += invest_dividends * pct_reinvest # add pct of dividend funds chosen by user to reinvestment
 
         return for_user_money, to_invest
+
